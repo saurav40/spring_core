@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd">
+         
+         <bean class="com.spring_core.ci.Person" name="person">
+           <constructor-arg value="Saurabh"/>
+           <constructor-arg value="102" type="int"/>
+           <constructor-arg ref="cref" />
+         </bean>
+         
+         <bean class="com.spring_core.ci.Certi" name="cref">
+           <constructor-arg value="Android using Kotlin"/>
+         </bean>
+         
+         <!-- Constructor injection using C schema -->
+         <bean class="com.spring_core.ci.Certi" name="certi2">
+           <constructor-arg value="Java SpringBoot "/>
+         </bean>
+       
+         <bean class="com.spring_core.ci.Person" name="pref" c:name="Saurabh" c:personId="106" c:certi-ref="certi2"/>
+         
+         <bean class="com.spring_core.ci.Addition" name="addref0">
+          <constructor-arg value="28"/>
+          <constructor-arg value="20"/>
+         </bean>
+         
+         <bean class="com.spring_core.ci.Addition" name="addref1">
+            <constructor-arg value="28" type="int"/>
+            <constructor-arg value="20" type="int"/>
+         </bean>
+         
+         <bean class="com.spring_core.ci.Addition" name="addref2">
+          <constructor-arg value="28" type="double"/>
+          <constructor-arg value="20" type="double"/>
+         </bean>
+</beans>
+         
+ 
