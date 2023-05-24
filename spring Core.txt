@@ -1,0 +1,219 @@
+Spring Core: v 5.3.22
+----------------------
+
+IoC Container-also known as Dependency Injection.
+1.setter Injection
+2.constructor injection
+------------
+Beans
+-----
+  org.springframework.beans
+  org.springframework.context ->
+  these two packages are basis for spring Framework's IoC container.
+  
+Beanfactory(I) -provides an advanced configuration mechanism capable of managing      any type of object.
+  ApplicationContext(I) - is a sub-interface of BeanFactory.
+                       Adds:
+                           Easier Integration with Spring's AOP features.
+                           Message resource handling(for use in internationlization)
+                           Event Publication
+                           Application-layer specific contextx such as the WebApplicationContext.
+
+  In short, the BeanFactory provides the configuration framework and basic functionality,
+  and the ApplicationContext adds more enterprise-specific functionality.
+
+  The ApplicationContext is a complete superset of the BeanFactory and
+  is used exclusively in this chapter in descriptions of Spring’s IoC container.
+
+CONTINER:
+--------
+"org.springframework.context.ApplicationContext" -interface represents Spring IOC container.
+ It is responsible for instatiating,configuring and assembling the beans.
+
+Container gets its instructions on what objects to instantiate,configure,and assemble by reading configuration metadata from XML configuration.
+
+Configuration meta data could be-XML,JAVA annotations or java code.
+
+Several Implementations of ApplicationContext Interface are supplied with Spring.
+In Stand-alone applications,it is common to create an instance of "ClassPathXmlApplicationContext" or
+"FileSysystemXmlApplicationContext".
+
+
+While XML has been the traditional format for defining configuraion metadata.
+However we can instruct the container to use JAVA annotations or code as the metadata format by providing small amount 
+of XML Configuration.
+In most application scenarios,for example,in a web application,a simple eight lines of boilerplate web 
+descriptor XML in the web.xml.
+
+MetaDate configuration in Spring:
+1.XML based 
+2.Annotation Based-Spring 2.5 Introduced
+3.java based configuration-introdued with spring 3.0.
+       @Configuration,@Bean,@Import and @Depends
+
+1.XML Based Configuration
+    Xml-based configuration metadata confiures these beans as <bean/>.
+    These beans definitions correspond to the actual objects that make up your applicatio.
+    Tyically,we define service layer objects,Data access objects(DAOs).
+
+  basic struture of XML Based Configuration.
+   
+  <?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="..." class="...">  
+        <!-- collaborators and configuration for this bean go here -->
+    </bean>
+
+    <bean id="..." class="...">
+        <!-- collaborators and configuration for this bean go here -->
+    </bean>
+
+    <!-- more bean definitions go here -->
+
+</beans>
+
+Xmlns->XML Namespace -> an XML namespace is a collection of XML elements and attributes identified by an Internationalized Resource Identifier (IRI);
+
+->The id attribute is a string that identifies the individual bean definition.
+
+->The class attribute defines the type of the bean and uses the fully qualified
+classname.
+
+
+Instantiating a Container
+-------------------------
+
+   ApplicationContext context =new ClassPathXmlApplicationContext("services.xml","daos.xml");
+
+ 
+    service.xml
+    -----------
+     <?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- services -->
+
+    <bean id="petStore" class="org.springframework.samples.jpetstore.services.PetStoreServiceImpl">
+        <property name="accountDao" ref="accountDao"/>
+        <property name="itemDao" ref="itemDao"/>
+        <!-- additional collaborators and configuration for this bean go here -->
+    </bean>
+
+    <!-- more bean definitions for services go here -->
+
+</beans>
+
+
+daos.xml
+--------
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="accountDao"
+        class="org.springframework.samples.jpetstore.dao.jpa.JpaAccountDao">
+        <!-- additional collaborators and configuration for this bean go here -->
+    </bean>
+
+    <bean id="itemDao" class="org.springframework.samples.jpetstore.dao.jpa.JpaItemDao">
+        <!-- additional collaborators and configuration for this bean go here -->
+    </bean>
+
+    <!-- more bean definitions for data access objects go here -->
+
+</beans>
+
+
+NOTE:
+  In the preceding example, the service layer consists of the PetStoreServiceImpl class 
+  and two data access objects of the types JpaAccountDao and JpaItemDao 
+  (based on the JPA Object-Relational Mapping standard).
+  The property name element refers to the name of the JavaBean property, and
+  the ref element refers to the name of another bean definition. 
+  This linkage between id and ref elements expresses the dependency between collaborating objects.
+
+Composing XML-based Configuration Metadata:
+  -->You can use the application context constructor to load bean definitions from all these XML fragments
+ <beans>
+    <import resource="services.xml"/>
+    <import resource="resources/messageSource.xml"/>
+    <import resource="/resources/themeSource.xml"/>
+
+    <bean id="bean1" class="..."/>
+    <bean id="bean2" class="..."/>
+</beans>
+
+Life Cycle Method of Spring Bean
+--------------------------------
+ Spring Provide two importants method to every bean.
+ 1. public void Init()
+ 2. public void destroy();
+
+Autowiring
+----------
+1.XML
+  Autowiring Modes
+     -no
+     -byName
+     -byType
+     -construtor
+     -autodetect-deprected since spring 3
+2.Annotations
+  -@Autowired
+  3 ways to use autowire 
+  1.on field
+  2.on setter method
+  3.on constructor
+Autowiring 
+  Advantages: Automatic
+              less code
+  DisAdvantages:
+             No Control of programmer.
+             It can't used for primitive and string values.
+
+Bean Scope(Type of Objects)
+---------------------------
+Singleton
+ 
+Prototype
+
+request
+session :these two are web application Specific.
+
+globalsession-used for portlet applications
+
+--------------------------
+Spring Expression Language
+--------------------------
+Supports Parsing and executing expression with the help of @Value
+annotations.
+
+format : @Value("#{expression}")
+
+expression-{classes,variable,methods,Constructors and Objects}
+            {and symbols}
+           {char,numeric,operators,keywords,and special symbols which return a value}
+  
+  e.g- @Value("#{11+22}")
+        @Value("#{8>6?88:55"})
+         
+  can call static methods,object methods,variables
+
+How to invoke static method & variable
+ 
+  -->T(class_name)Method(param)
+  -->T(class_name).variable
+
+Removing Complete XML Configuration using
+-----------------------------------------
+@ComponentScan @Configuration @Bean
+
